@@ -1,0 +1,118 @@
+plugins {
+    id "java"
+    id "maven-publish"
+    id "com.palantir.git-version" version "0.5.3"
+	id "de.abas.esdk" version "0.6.3"
+}
+
+repositories {
+    mavenLocal()
+	jcenter()
+    maven { url "http://$NEXUS_HOST:$NEXUS_PORT/nexus/content/repositories/$NEXUS_NAME" }
+}
+
+createApp.doLast {
+    copy {
+        from "src/main/groovy-scripts"
+        into "${createApp.outputDir}/groovy"
+    }
+}
+
+esdk {
+    app {
+        name="SSTL2DOCSYS"
+        vendorId="Romaco"
+        appId=""
+        entryPoints = []
+        shared=true
+        infosystems = ["IS.OWIS.SSTL2DOCSYS"]
+        tables = []
+	    data = []
+        keys = []
+        enums = []
+        languages = "DE"
+    }
+
+    abas {
+        homeDir = ABAS_HOMEDIR
+        clientDir = ABAS_CLIENTDIR
+        clientId = ABAS_CLIENTID
+        edpHost = EDP_HOST
+        edpPort = EDP_PORT.toInteger()
+        edpUser = EDP_USER
+        edpPassword = EDP_PASSWORD
+    }
+
+    nexus {
+        nexusHost = NEXUS_HOST
+        nexusPort = NEXUS_PORT.toInteger()
+        nexusRepoName = NEXUS_NAME
+        nexusPassword = NEXUS_PASSWORD
+    }
+
+    ssh {
+        host = SSH_HOST
+        port = SSH_PORT.toInteger()
+        user = SSH_USER
+        password = SSH_PASSWORD
+        key = SSH_KEY
+    }
+    installType = "SSH"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+compileJava {
+    options.encoding = "UTF-8"
+}
+
+configurations { compile.extendsFrom provided }
+
+group='abasGmbh'
+def versionString = gitVersion().toString()
+if (versionString.contains("-")) {
+    version versionString.split("-")[0].substring(1) + "-SNAPSHOT"
+} else {
+    version versionString.substring(1)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId 'abasGmbh'
+            artifactId 'SSTL2Docsys'
+            artifact "build/libs/${project.name}-standalone-app.jar"
+        }
+    }
+    repositories {
+        if(project.hasProperty("nexusSnapshotURL") && project.hasProperty("nexusReleaseURL")
+                && project.hasProperty("nexusUser") && project.hasProperty("nexusPassword")){
+            if(project.version.endsWith('-SNAPSHOT')) {
+                maven {
+                    url nexusSnapshotURL
+                    credentials {
+                        username nexusUser
+                        password nexusPassword
+                    }
+                }
+            } else {
+                maven {
+                    url nexusReleaseURL
+                    credentials {
+                        username nexusUser
+                        password nexusPassword
+                    }
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    provided 'de.abas.homedir:log4j:1.0.0'
+    compile group: 'com.microsoft.sqlserver', name: 'mssql-jdbc', version: '6.2.1.jre8'
+
+
+}

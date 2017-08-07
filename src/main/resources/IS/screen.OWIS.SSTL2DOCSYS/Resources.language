@@ -1,0 +1,11 @@
+language.source=de
+sstl2docsys_owfo$0=SSTL 2 Docsys
+sstl2docsys_owfo$1=Seite 1
+sstl2docsys_owfo$2=Seite 1
+sstl2docsys_owfo_ftable_rowno=Laufende Zeilennummer
+sstl2docsys_owis_fhead_yartikel=einzelner Artikel
+sstl2docsys_owis_fhead_ysqlhost=SQL Host
+sstl2docsys_owis_fhead_ysqlpass=SQL Passwort
+sstl2docsys_owis_fhead_ysqlport=SQL Port
+sstl2docsys_owis_fhead_ysqltestconn=SQL Verbindung testen
+sstl2docsys_owis_fhead_ysqluser=SQL Benutzer

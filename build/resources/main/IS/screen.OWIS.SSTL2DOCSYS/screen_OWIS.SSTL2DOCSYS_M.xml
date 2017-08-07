@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE frame SYSTEM "urn:x-abas.de:abasscreens-1.00.dtd">
+
+<frame customHelp="" frameType="M" msgId="sstl2docsys_owfo$0" stdHelp="25B.1">
+ <layout.grid>
+  <metainfo axis="row" grid="0" stretch="zoom" />
+  <metainfo axis="column" grid="0" stretch="zoom" />
+  <cell alignX="fill" alignY="fill" gridX="0" gridY="0">
+   <layout.split axis="row">
+    <pane.split>
+     <layout.notebook>
+      <pane.notebook msgId="sstl2docsys_owfo$1">
+       <layout.grid>
+        <metainfo axis="column" grid="2" indent="large" />
+        <cell alignY="beginning" gridX="0" gridY="0">
+         <label msgId="sstl2docsys_owis_fhead_ysqlhost" />
+        </cell>
+        <cell alignY="beginning" gridX="1" gridY="0">
+         <erpfield dimX="20" s3Name="0:ysqlhost" />
+        </cell>
+        <cell alignY="beginning" gridX="2" gridY="0">
+         <label msgId="sstl2docsys_owis_fhead_ysqlport" />
+        </cell>
+        <cell alignY="beginning" gridX="3" gridY="0">
+         <erpfield s3Name="0:ysqlport" />
+        </cell>
+        <cell alignY="beginning" gridX="0" gridY="1">
+         <label msgId="sstl2docsys_owis_fhead_ysqluser" />
+        </cell>
+        <cell alignY="beginning" gridX="1" gridY="1">
+         <erpfield dimX="20" s3Name="0:ysqluser" />
+        </cell>
+        <cell alignY="beginning" gridX="2" gridY="1">
+         <label msgId="sstl2docsys_owis_fhead_ysqlpass" />
+        </cell>
+        <cell alignY="beginning" gridX="3" gridY="1">
+         <erpfield dimX="20" s3Name="0:ysqlpass" />
+        </cell>
+        <cell alignY="beginning" gridX="0" gridY="2" />
+        <cell alignY="beginning" gridX="1" gridY="2">
+         <erpfield dimX="0" msgId="sstl2docsys_owis_fhead_ysqltestconn" s3Name="0:ysqltestconn" />
+        </cell>
+        <cell alignY="beginning" gridX="2" gridY="2" />
+        <cell alignY="beginning" gridX="3" gridY="2" />
+        <cell alignY="beginning" gridX="0" gridY="3">
+         <label msgId="sstl2docsys_owis_fhead_yartikel" />
+        </cell>
+        <cell alignY="beginning" gridX="1" gridY="3">
+         <erpfield s3Name="0:yartikel" />
+        </cell>
+        <cell alignY="beginning" gridX="2" gridY="3" />
+        <cell alignY="beginning" gridX="3" gridY="3" />
+        <cell alignY="beginning" gridX="0" gridY="4" />
+        <cell alignY="beginning" gridX="1" gridY="4" />
+        <cell alignY="beginning" gridX="2" gridY="4" />
+        <cell alignY="beginning" gridX="3" gridY="4" />
+        <cell alignY="beginning" gridX="0" gridY="5" />
+        <cell alignY="beginning" gridX="1" gridY="5" />
+        <cell alignY="beginning" gridX="2" gridY="5" />
+        <cell alignY="beginning" gridX="3" gridY="5" />
+        <cell alignY="beginning" gridX="0" gridY="6" />
+        <cell alignY="beginning" gridX="1" gridY="6" />
+        <cell alignY="beginning" gridX="2" gridY="6" />
+        <cell alignY="beginning" gridX="3" gridY="6" />
+        <cell alignY="beginning" gridX="0" gridY="7" />
+        <cell alignY="beginning" gridX="1" gridY="7" />
+        <cell alignY="beginning" gridX="2" gridY="7" />
+        <cell alignY="beginning" gridX="3" gridY="7" />
+       </layout.grid>
+      </pane.notebook>
+     </layout.notebook>
+    </pane.split>
+    <pane.split>
+     <table>
+      <erpfield access="readOnly" dimX="0" msgId="sstl2docsys_owfo_ftable_rowno" s3Name="1:zn" />
+     </table>
+    </pane.split>
+   </layout.split>
+  </cell>
+ </layout.grid>
+</frame>
+

@@ -1,8 +1,8 @@
 package de.abasgmbh.infosystem.sstl2docsys;
 
-public class PARTLISTUSER {
+public class PARTLIST {
 	private String abasId;
-	private String userLogin;
+	private String belegNr;
 	private String artikelNr;
 	private String unterArtikelNr;
 
@@ -12,11 +12,11 @@ public class PARTLISTUSER {
 	public void setAbasId(String abasId) {
 		this.abasId = abasId;
 	}
-	public String getUserLogin() {
-		return userLogin;
+	public String getBelegNr() {
+		return belegNr;
 	}
-	public void setUserLogin(String userLogin) {
-		this.userLogin = userLogin;
+	public void setBelegNr(String belegNr) {
+		this.belegNr = belegNr;
 	}
 	public String getArtikelNr() {
 		return artikelNr;
@@ -30,4 +30,5 @@ public class PARTLISTUSER {
 	public void setUnterArtikelNr(String unterArtikelNr) {
 		this.unterArtikelNr = unterArtikelNr;
 	}
+
 }

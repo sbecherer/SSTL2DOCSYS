@@ -2,37 +2,121 @@ package de.abasgmbh.infosystem.sstl2docsys;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
-import de.abas.erp.api.gui.TextBox;
-import de.abas.erp.db.DbContext;
+import org.apache.log4j.Logger;
 
 public class SQLConnectionHandler {
 
 	private Connection connection = null;
-	public Connection getConnection()
-	{
+	private Logger logger = Logger.getLogger(SQLConnectionHandler.class);
+
+	private String driver;
+	private String host;
+	private String db;
+	private String user;
+	private String pass;
+
+	public Connection getConnection() {
 		return connection;
 	}
-	
-	public SQLConnectionHandler(DbContext ctx, String host, int port, String user, String pass) {
+
+	// Konstruktor inkl. Verbindungstest
+	public SQLConnectionHandler(String pdriver, String phost, String pdb, String puser, String ppass)
+			throws ClassNotFoundException {
 		// Declare the JDBC objects.
 		connection = null;
-		//ctx.out().println("Connecting");
-
+		logger.debug("Testing SQL connection");
 		try {
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-			connection = DriverManager.getConnection("jdbc:sqlserver://" + host +":"+port+";databasename=DX4HELP", user, pass);
-			ctx.out().println("Connection established");
-		} catch (Exception e) {
-			new TextBox(ctx, "Fehler!", "Verbindung zum SQL Server konnte nicht hergestellt werden!" + e.getMessage()).show();
-
-			e.printStackTrace();
+			Class.forName(pdriver);
+			connection = DriverManager.getConnection("jdbc:sqlserver://" + phost + ";databasename=" + pdb, puser,
+					ppass);
+			logger.debug("SQL connection established");
+			this.driver = pdriver;
+			this.host = phost;
+			this.db = pdb;
+			this.user = puser;
+			this.pass = ppass;
+		} catch (SQLException e) {
+			logger.error("SQL connection could not be established");
+			logger.error(e.getMessage());
 		} finally {
 			if (connection != null)
 				try {
 					connection.close();
+					logger.debug("SQL connection closed");
 				} catch (Exception e) {
 				}
 		}
+	}
+
+	// Führt SQL statements nacheinander aus
+	public boolean ExecuteSQLstatements(ArrayList<String> statements) {
+		connection = null;
+		boolean result = false;
+
+		try {
+			Class.forName(driver);
+			connection = DriverManager.getConnection("jdbc:sqlserver://" + host + ";databasename=" + db, user, pass);
+			logger.debug("SQL connection established");
+
+			Statement stmt = null;
+			Connection con = connection;
+			stmt = con.createStatement();
+
+			for (String sql : statements) {
+				stmt.executeUpdate(sql);
+				logger.debug("SQL executed --- " + sql);
+			}
+
+			result = true;
+		} catch (Exception e) {
+			logger.error("SQL connection not established");
+			logger.error(e.getMessage());
+		} finally {
+			if (connection != null)
+				try {
+					connection.close();
+					logger.debug("SQL connection closed");
+				} catch (Exception e) {
+				}
+		}
+
+		return result;
+	}
+
+	// Führt einzelnes SQL statement aus 
+	public boolean ExecuteSQLstatement(String statement) {
+		connection = null;
+		boolean result = false;
+
+		try {
+			Class.forName(driver);
+			connection = DriverManager.getConnection("jdbc:sqlserver://" + host + ";databasename=" + db, user, pass);
+			logger.debug("SQL connection established");
+
+			Statement stmt = null;
+			Connection con = connection;
+			stmt = con.createStatement();
+
+			stmt.executeUpdate(statement);
+			logger.debug("SQL executed --- " + statement);
+
+			result = true;
+		} catch (Exception e) {
+			logger.error("SQL connection not established");
+			logger.error(e.getMessage());
+		} finally {
+			if (connection != null)
+				try {
+					connection.close();
+					logger.debug("SQL connection closed");
+				} catch (Exception e) {
+				}
+		}
+
+		return result;
 	}
 }

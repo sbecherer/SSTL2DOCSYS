@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE frame SYSTEM "urn:x-abas.de:abasscreens-1.00.dtd">
+
+<frame customHelp="" frameType="M" msgId="sstl2docsys_owfo$0" stdHelp="25B.1">
+ <layout.grid>
+  <metainfo axis="row" grid="0" stretch="zoom" />
+  <metainfo axis="column" grid="0" stretch="zoom" />
+  <cell alignX="fill" alignY="fill" gridX="0" gridY="0">
+     <layout.notebook>
+      <pane.notebook msgId="sstl2docsys_owfo$1">
+       <layout.grid>
+        <metainfo axis="column" grid="2" indent="large" />
+        <cell gridX="0" gridY="0" sizeX="4">
+         <groupline msgId="4224cf70-f31b-4439-b551-a7c6cf4492d5" />
+        </cell>
+        <cell alignY="beginning" gridX="0" gridY="1">
+         <label msgId="68ee3cfb-7ea0-474b-aade-09ec1f600680" />
+        </cell>
+        <cell gridX="1" gridY="1">
+         <erpfield s3Name="0:ysqldriver" />
+        </cell>
+        <cell gridX="2" gridY="1" />
+        <cell gridX="3" gridY="1" />
+        <cell gridX="0" gridY="2">
+         <label msgId="f324140b-2a58-43c5-af2d-db89cdba5641" />
+        </cell>
+        <cell gridX="1" gridY="2">
+         <erpfield s3Name="0:ysqlhost" />
+        </cell>
+        <cell gridX="2" gridY="2" />
+        <cell gridX="3" gridY="2" />
+        <cell gridX="0" gridY="3">
+         <label msgId="2fb84a3d-9314-412a-b0d6-c8b109407d27" />
+        </cell>
+        <cell gridX="1" gridY="3">
+         <erpfield dimX="20" s3Name="0:ysqldb" />
+        </cell>
+        <cell gridX="2" gridY="3" />
+        <cell gridX="3" gridY="3" />
+        <cell alignY="beginning" gridX="0" gridY="4">
+         <label msgId="sstl2docsys_owis_fhead_ysqluser" />
+        </cell>
+        <cell alignY="beginning" gridX="1" gridY="4">
+         <erpfield dimX="20" s3Name="0:ysqluser" />
+        </cell>
+        <cell alignY="beginning" gridX="2" gridY="4" />
+        <cell alignY="beginning" gridX="3" gridY="4" />
+        <cell gridX="0" gridY="5">
+         <label msgId="sstl2docsys_owis_fhead_ysqlpass" />
+        </cell>
+        <cell gridX="1" gridY="5">
+         <erpfield dimX="20" s3Name="0:ysqlpass" />
+        </cell>
+        <cell gridX="2" gridY="5" />
+        <cell gridX="3" gridY="5" />
+        <cell alignY="beginning" gridX="0" gridY="6" />
+        <cell gridX="1" gridY="6">
+         <erpfield dimX="0" msgId="sstl2docsys_owis_fhead_ysqltestconn" s3Name="0:ysqltestconn" />
+         <erpfield dimX="0" msgId="936f08f8-cbe7-41d8-b1a2-80b2fcb9a4b7" s3Name="0:ysaveconfig" />
+        </cell>
+        <cell alignY="beginning" gridX="2" gridY="6" />
+        <cell alignX="end" gridX="3" gridY="6" />
+        <cell gridX="0" gridY="7" sizeX="4">
+         <groupline msgId="a7780688-9a4a-484b-903e-74eb37e72ad9" />
+        </cell>
+        <cell alignY="beginning" gridX="0" gridY="8">
+         <label msgId="sstl2docsys_owis_fhead_yartikel" />
+        </cell>
+        <cell alignY="beginning" gridX="1" gridY="8">
+         <erpfield s3Name="0:yartikel" />
+        </cell>
+        <cell alignY="beginning" gridX="2" gridY="8">
+         <label msgId="3ee5bc29-ee03-4ebd-9caf-1c8c6299df1b" />
+        </cell>
+        <cell alignY="beginning" gridX="3" gridY="8">
+         <erpfield s3Name="0:yvorgang" />
+        </cell>
+        <cell alignY="beginning" gridX="0" gridY="9" />
+        <cell alignY="beginning" gridX="1" gridY="9" />
+        <cell alignY="beginning" gridX="2" gridY="9" />
+        <cell alignY="beginning" gridX="3" gridY="9" />
+        <cell alignY="beginning" gridX="0" gridY="10" />
+        <cell alignY="beginning" gridX="1" gridY="10" />
+        <cell alignY="beginning" gridX="2" gridY="10" />
+        <cell alignY="beginning" gridX="3" gridY="10" />
+        <cell alignY="beginning" gridX="0" gridY="11" />
+        <cell alignY="beginning" gridX="1" gridY="11" />
+        <cell alignY="beginning" gridX="2" gridY="11" />
+        <cell alignY="beginning" gridX="3" gridY="11" />
+        <cell alignY="beginning" gridX="0" gridY="12" />
+        <cell alignY="beginning" gridX="1" gridY="12" />
+        <cell alignY="beginning" gridX="2" gridY="12" />
+        <cell alignY="beginning" gridX="3" gridY="12" />
+       </layout.grid>
+      </pane.notebook>
+     </layout.notebook>
+  </cell>
+ </layout.grid>
+</frame>
+

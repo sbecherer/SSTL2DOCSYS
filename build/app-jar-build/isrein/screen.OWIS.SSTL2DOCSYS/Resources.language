@@ -1,0 +1,16 @@
+language.source=de
+sstl2docsys_owfo$0=SSTL 2 Docsys
+sstl2docsys_owfo$1=Seite 1
+sstl2docsys_owfo$2=Seite 1
+sstl2docsys_owfo_ftable_rowno=Laufende Zeilennummer
+sstl2docsys_owis_fhead_yartikel=einzelner Artikel
+sstl2docsys_owis_fhead_ysqlpass=SQL Passwort
+sstl2docsys_owis_fhead_ysqltestconn=SQL Verbindung testen
+sstl2docsys_owis_fhead_ysqluser=SQL Benutzer
+3ee5bc29-ee03-4ebd-9caf-1c8c6299df1b=Anfrage/Bestellung
+4224cf70-f31b-4439-b551-a7c6cf4492d5=SQL Server Verbindung
+a7780688-9a4a-484b-903e-74eb37e72ad9=Daten Auswahl
+936f08f8-cbe7-41d8-b1a2-80b2fcb9a4b7=Verbindungsdaten speichern
+68ee3cfb-7ea0-474b-aade-09ec1f600680=SQL Treiber
+f324140b-2a58-43c5-af2d-db89cdba5641=SQL Host
+2fb84a3d-9314-412a-b0d6-c8b109407d27=SQL Datenbank

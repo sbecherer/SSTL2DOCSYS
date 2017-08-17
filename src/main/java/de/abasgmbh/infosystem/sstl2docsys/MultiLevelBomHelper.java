@@ -29,8 +29,8 @@ public class MultiLevelBomHelper {
 		this.useSQL = useSQLp;
 	}
 
-	public ArrayList<PARTLISTUSER> getBOMList(SelectablePart part) {
-		ArrayList<PARTLISTUSER> list = new ArrayList<PARTLISTUSER>();
+	public ArrayList<PartListUser> getBOMList(SelectablePart part) {
+		ArrayList<PartListUser> list = new ArrayList<PartListUser>();
 
 		MultiLevelBOM multiLevelBom = ctx.openInfosystem(MultiLevelBOM.class);
 		logger.debug("Infosystem SSTL loaded");
@@ -48,10 +48,10 @@ public class MultiLevelBomHelper {
 		String dmsuser = globalTextBuffer.getStringValue("currUserPwd^altDMSName");
 		// Abas ID erzeugen
 		String abasid = part.getId().toString() + "_" + dmsuser + "_" + System.currentTimeMillis();
-		
+
 		logger.debug("Creating objects form IS table");
 		for (Row row : multiLevelBom.table().getRows()) {
-			PARTLISTUSER plu = new PARTLISTUSER();
+			PartListUser plu = new PartListUser();
 			plu.setAbasId(abasid);
 			plu.setArtikelNr(part.getIdno());
 			plu.setUserLogin(dmsuser);
@@ -62,8 +62,9 @@ public class MultiLevelBomHelper {
 
 		return list;
 	}
-	public ArrayList<PARTLIST> getBOMList(SelectablePart part, SelectablePurchasing purchase) {
-		ArrayList<PARTLIST> list = new ArrayList<PARTLIST>();
+
+	public ArrayList<PartList> getBOMList(SelectablePart part, SelectablePurchasing purchase) {
+		ArrayList<PartList> list = new ArrayList<PartList>();
 
 		MultiLevelBOM multiLevelBom = ctx.openInfosystem(MultiLevelBOM.class);
 		logger.debug("Infosystem SSTL loaded");
@@ -75,7 +76,7 @@ public class MultiLevelBomHelper {
 
 		logger.debug("Creating objects from IS table");
 		for (Row row : multiLevelBom.table().getRows()) {
-			PARTLIST plu = new PARTLIST();
+			PartList plu = new PartList();
 			plu.setAbasId(purchase.getId().toString());
 			plu.setBelegNr(purchase.getIdno());
 			plu.setArtikelNr(part.getIdno());
@@ -86,38 +87,38 @@ public class MultiLevelBomHelper {
 
 		return list;
 	}
-	public ArrayList<PARTLIST> getProcessBOMList(SelectablePurchasing purchase) {
-		ArrayList<PARTLIST> list = new ArrayList<PARTLIST>();
-		
+
+	public ArrayList<PartList> getProcessBOMList(SelectablePurchasing purchase) {
+		ArrayList<PartList> list = new ArrayList<PartList>();
+
 		String ptyp = purchase.getString(Purchasing.META.type);
-		
-		if (ptyp.equals("(2)")){
+
+		if (ptyp.equals("(2)")) {
 			Request rq = ctx.load(Request.class, purchase.id());
-			
+
 			for (Request.Row row : rq.getTableRows()) {
 				SelectablePart p = row.getProduct();
-				if (p instanceof Product){
+				if (p instanceof Product) {
 					list.addAll(getBOMList(p, purchase));
 				}
 			}
-		} else if (ptyp == "(3)"){
+		} else if (ptyp == "(3)") {
 			PurchaseOrder po = ctx.load(PurchaseOrder.class, purchase.id());
-			
+
 			for (PurchaseOrder.Row row : po.getTableRows()) {
 				SelectablePart p = row.getProduct();
-				if (p instanceof Product){
+				if (p instanceof Product) {
 					list.addAll(getBOMList(p, purchase));
 				}
 			}
+		} else {
+			// error wrong object
 		}
-		else{
-			//error wrong object
-		}
-		
+
 		return list;
 	}
-	
-	public void writePartListUserToSQL(ArrayList<PARTLISTUSER> plulist) {
+
+	public void writePartListUserToSQL(ArrayList<PartListUser> plulist) {
 
 		ArrayList<String> statements = new ArrayList<String>();
 		logger.debug("Writing Data");
@@ -128,24 +129,22 @@ public class MultiLevelBomHelper {
 			logger.debug("Only logging");
 		}
 
-		for (PARTLISTUSER partlistuser : plulist) {
-			String sql = "INSERT INTO [dbo].[TBL_SUPPLIERWEB_PARTLIST_USER] ([AbasID], [UserLogin], [ArtikelNr], [UnterArtikelNr]) "
-					+ "VALUES ('" + partlistuser.getAbasId() + "', '" + partlistuser.getUserLogin() + "', '"
-					+ partlistuser.getArtikelNr() + "', '" + partlistuser.getUnterArtikelNr() + "')";
+		for (PartListUser partlistuser : plulist) {
+			String sql = partlistuser.CreateSQLStatement();
 			statements.add(sql);
 			logger.debug("SQL statement created --- " + sql);
 		}
 
 		boolean result = sqlconnection.ExecuteSQLstatements(statements);
-		
-		if (result){
+
+		if (result) {
 			logger.debug("SQL statements executed");
-		}
-		else {
+		} else {
 			logger.error("SQL statements not executed");
 		}
 	}
-	public void writePartListToSQL(ArrayList<PARTLIST> pllist) {
+
+	public void writePartListToSQL(ArrayList<PartList> pllist) {
 
 		ArrayList<String> statements = new ArrayList<String>();
 		logger.debug("Writing data");
@@ -156,20 +155,17 @@ public class MultiLevelBomHelper {
 			logger.debug("Only logging");
 		}
 
-		for (PARTLIST partlist : pllist) {
-			String sql = "INSERT INTO [dbo].[TBL_SUPPLIERWEB_PARTLIST] ([AbasID], [BelegNr], [ArtikelNr], [UnterArtikelNr]) "
-					+ "VALUES ('" + partlist.getAbasId() + "', '" + partlist.getBelegNr() + "', '"
-					+ partlist.getArtikelNr() + "', '" + partlist.getUnterArtikelNr() + "')";
+		for (PartList partlist : pllist) {
+			String sql = partlist.CreateSQLStatement();
 			statements.add(sql);
 			logger.debug("SQL statement created --- " + sql);
 		}
 
 		boolean result = sqlconnection.ExecuteSQLstatements(statements);
-		
-		if (result){
+
+		if (result) {
 			logger.debug("SQL statements executed");
-		}
-		else {
+		} else {
 			logger.error("SQL statements not executed");
 		}
 	}

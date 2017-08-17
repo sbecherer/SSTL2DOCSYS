@@ -87,7 +87,7 @@ public class SQLConnectionHandler {
 		return result;
 	}
 
-	// Führt einzelnes SQL statement aus 
+	// Führt einzelnes SQL statement aus
 	public boolean ExecuteSQLstatement(String statement) {
 		connection = null;
 		boolean result = false;

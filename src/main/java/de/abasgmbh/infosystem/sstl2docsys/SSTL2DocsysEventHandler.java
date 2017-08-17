@@ -17,8 +17,15 @@ import de.abas.erp.axi.screen.ScreenControl;
 import de.abas.erp.axi2.EventHandlerRunner;
 import de.abas.erp.axi2.annotation.ButtonEventHandler;
 import de.abas.erp.axi2.annotation.EventHandler;
+import de.abas.erp.axi2.annotation.FieldEventHandler;
+import de.abas.erp.axi2.annotation.ScreenEventHandler;
 import de.abas.erp.axi2.event.ButtonEvent;
+import de.abas.erp.axi2.event.FieldEvent;
+import de.abas.erp.axi2.event.ScreenEvent;
 import de.abas.erp.axi2.type.ButtonEventType;
+import de.abas.erp.axi2.type.FieldEventType;
+import de.abas.erp.axi2.type.ScreenEventType;
+import de.abas.erp.common.type.enums.EnumDialogBox;
 import de.abas.erp.db.DbContext;
 import de.abas.erp.db.infosystem.custom.owis.SSTL2Docsys;
 import de.abas.erp.db.schema.purchasing.PurchaseOrder;
@@ -28,22 +35,15 @@ import de.abas.erp.db.schema.vendor.SelectableVendor;
 import de.abas.erp.db.schema.vendor.Vendor;
 import de.abas.erp.db.schema.vendor.VendorContact;
 import de.abas.erp.jfop.rt.api.annotation.RunFopWith;
-import de.abas.erp.axi2.annotation.FieldEventHandler;
-import de.abas.erp.axi2.event.FieldEvent;
-import de.abas.erp.axi2.type.FieldEventType;
-import de.abas.erp.common.type.enums.EnumDialogBox;
-import de.abas.erp.axi2.annotation.ScreenEventHandler;
-import de.abas.erp.axi2.event.ScreenEvent;
-import de.abas.erp.axi2.type.ScreenEventType;
 
 @EventHandler(head = SSTL2Docsys.class, row = SSTL2Docsys.Row.class)
 
 @RunFopWith(EventHandlerRunner.class)
 
 public class SSTL2DocsysEventHandler {
-	private static String CONFIGFILE = "owis/sstl2docsys.config.properties";
+	final String CONFIGFILE = "owis/sstl2docsys.config.properties";
+	final boolean USESQL = true;
 
-	static final boolean useSQL = true;
 	Logger logger = Logger.getLogger(SSTL2DocsysEventHandler.class);
 
 	@ButtonEventHandler(field = "start", type = ButtonEventType.AFTER)
@@ -63,7 +63,7 @@ public class SSTL2DocsysEventHandler {
 			return;
 		}
 
-		// SQL Verbindung testen 
+		// SQL Verbindung testen
 		SQLConnectionHandler sqlcon = null;
 		try {
 			sqlcon = new SQLConnectionHandler(head.getYsqldriver(), head.getYsqlhost(), head.getYsqldb(),
@@ -95,19 +95,19 @@ public class SSTL2DocsysEventHandler {
 
 		if (head.getYartikel() != null) {
 			// Ein Artikel ist gesetzt
-			MultiLevelBomHelper mbh = new MultiLevelBomHelper(ctx, sqlcon, useSQL);
+			MultiLevelBomHelper mbh = new MultiLevelBomHelper(ctx, sqlcon, USESQL);
 
-			ArrayList<PARTLISTUSER> list = mbh.getBOMList(head.getYartikel());
+			ArrayList<PartListUser> list = mbh.getBOMList(head.getYartikel());
 
 			logger.debug("Part: " + head.getYartikel().getIdno() + ", found " + list.size() + " sub parts");
 			if (list.size() > 0) {
 				mbh.writePartListUserToSQL(list);
 			}
 		} else if (head.getYvorgang() != null) {
-			//Ein Vorgang ist gesetzt
-			MultiLevelBomHelper mbh = new MultiLevelBomHelper(ctx, sqlcon, useSQL);
+			// Ein Vorgang ist gesetzt
+			MultiLevelBomHelper mbh = new MultiLevelBomHelper(ctx, sqlcon, USESQL);
 
-			ArrayList<PARTLIST> list = mbh.getProcessBOMList(head.getYvorgang());
+			ArrayList<PartList> list = mbh.getProcessBOMList(head.getYvorgang());
 
 			logger.debug("Process: " + head.getYvorgang().getIdno() + ", found " + list.size() + " entries");
 			if (list.size() > 0) {
@@ -123,7 +123,7 @@ public class SSTL2DocsysEventHandler {
 				po = ctx.load(PurchaseOrder.class, head.getYvorgang().id());
 			}
 
-			PARTLISTUSERINDEXVALUES pluiv = new PARTLISTUSERINDEXVALUES();
+			PartListUserIndexValues pluiv = new PartListUserIndexValues();
 			pluiv.setAbasId(head.getYvorgang().getId().toString());
 			pluiv.setBelegNr(head.getYvorgang().getIdno());
 			pluiv.setDocumentType((ptyp.equals("(2)")) ? "Anfrage" : "Bestellung");
@@ -132,11 +132,7 @@ public class SSTL2DocsysEventHandler {
 			SelectableVendor sv = (ptyp.equals("(2)")) ? rq.getVendor() : po.getVendor();
 			pluiv.setCuSuName((sv instanceof Vendor) ? ((Vendor) sv).getAddr() : ((VendorContact) sv).getAddr());
 
-			sqlcon.ExecuteSQLstatement(
-					"INSERT INTO [dbo].[TBL_SUPPLIERWEB_PARTLIST_USER_INDEXVALUES] ([AbasID], [BelegNr], [DocumentType], [DocumentDate], [CuSuNo], [CuSuName]) "
-							+ "VALUES ('" + pluiv.getAbasId() + "', '" + pluiv.getBelegNr() + "', '"
-							+ pluiv.getDocumentType() + "', '" + pluiv.getDocumentDate() + "', '" + pluiv.getCuSuNo()
-							+ "', '" + pluiv.getCuSuName() + "')");
+			sqlcon.ExecuteSQLstatement(pluiv.CreateSQLStatement());
 		} else {
 			logger.error("No part selected.");
 			screenControl.setNote("Bitte wählen Sie einen Artikel oder eine Anfrage/Bestellung aus!");

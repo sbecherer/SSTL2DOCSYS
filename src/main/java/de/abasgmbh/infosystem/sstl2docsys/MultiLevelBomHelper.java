@@ -1,9 +1,14 @@
 package de.abasgmbh.infosystem.sstl2docsys;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.text.TableView.TableRow;
 
 import org.apache.log4j.Logger;
 
+import de.abas.erp.api.gui.TextBox;
+import de.abas.erp.common.type.IdImpl;
 import de.abas.erp.db.DbContext;
 import de.abas.erp.db.infosystem.standard.st.MultiLevelBOM;
 import de.abas.erp.db.infosystem.standard.st.MultiLevelBOM.Row;
@@ -94,21 +99,33 @@ public class MultiLevelBomHelper {
 		String ptyp = purchase.getString(Purchasing.META.type);
 
 		if (ptyp.equals("(2)")) {
-			Request rq = ctx.load(Request.class, purchase.id());
+			Request rq = ctx.load(Request.class, new IdImpl(purchase.id().toString()));
+			//new TextBox(ctx, "Test", "Anfragen ID: " + rq).show();
 
-			for (Request.Row row : rq.getTableRows()) {
-				SelectablePart p = row.getProduct();
-				if (p instanceof Product) {
-					list.addAll(getBOMList(p, purchase));
+			Iterable<de.abas.erp.db.schema.purchasing.Request.Row> rows = rq.table().getRows();
+			if (rows != null) {
+				
+				for ( de.abas.erp.db.schema.purchasing.Request.Row row : rows) {
+					SelectablePart p = row.getProduct();
+					if (p != null) {
+						if (p instanceof Product) {
+							list.addAll(getBOMList(p, purchase));
+						}
+					}
 				}
 			}
 		} else if (ptyp == "(3)") {
 			PurchaseOrder po = ctx.load(PurchaseOrder.class, purchase.id());
 
-			for (PurchaseOrder.Row row : po.getTableRows()) {
-				SelectablePart p = row.getProduct();
-				if (p instanceof Product) {
-					list.addAll(getBOMList(p, purchase));
+			List<de.abas.erp.db.schema.purchasing.PurchaseOrder.Row> tableRows = po.getTableRows();
+			if (tableRows != null & tableRows.size() > 0) {
+				for (PurchaseOrder.Row row : tableRows) {
+					SelectablePart p = row.getProduct();
+					if (p != null) {
+						if (p instanceof Product) {
+							list.addAll(getBOMList(p, purchase));
+						}
+					}
 				}
 			}
 		} else {

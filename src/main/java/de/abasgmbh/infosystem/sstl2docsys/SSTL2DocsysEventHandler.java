@@ -119,7 +119,7 @@ public class SSTL2DocsysEventHandler {
 			String ptyp = head.getYvorgang().getString(Purchasing.META.type);
 			if (ptyp.equals("(2)")) {
 				rq = ctx.load(Request.class, head.getYvorgang().id());
-			} else if (ptyp == "(3)") {
+			} else if (ptyp.equals("(3)")) {
 				po = ctx.load(PurchaseOrder.class, head.getYvorgang().id());
 			}
 

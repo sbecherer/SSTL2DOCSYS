@@ -27,11 +27,11 @@ public class SQLConnectionHandler {
 	public SQLConnectionHandler(String pdriver, String phost, String pdb, String puser, String ppass)
 			throws ClassNotFoundException {
 		// Declare the JDBC objects.
-		connection = null;
+		this.connection = null;
 		logger.debug("Testing SQL connection");
 		try {
 			Class.forName(pdriver);
-			connection = DriverManager.getConnection("jdbc:sqlserver://" + phost + ";databasename=" + pdb, puser,
+			this.connection = DriverManager.getConnection("jdbc:sqlserver://" + phost + ";databasename=" + pdb, puser,
 					ppass);
 			logger.debug("SQL connection established");
 			this.driver = pdriver;
@@ -43,9 +43,9 @@ public class SQLConnectionHandler {
 			logger.error("SQL connection could not be established");
 			logger.error(e.getMessage());
 		} finally {
-			if (connection != null)
+			if (this.connection != null)
 				try {
-					connection.close();
+					this.connection.close();
 					logger.debug("SQL connection closed");
 				} catch (Exception e) {
 				}
@@ -54,16 +54,16 @@ public class SQLConnectionHandler {
 
 	// Führt SQL statements nacheinander aus
 	public boolean ExecuteSQLstatements(ArrayList<String> statements) {
-		connection = null;
+		this.connection = null;
 		boolean result = false;
 
 		try {
 			Class.forName(driver);
-			connection = DriverManager.getConnection("jdbc:sqlserver://" + host + ";databasename=" + db, user, pass);
+			this.connection = DriverManager.getConnection("jdbc:sqlserver://" + host + ";databasename=" + db, user, pass);
 			logger.debug("SQL connection established");
 
 			Statement stmt = null;
-			Connection con = connection;
+			Connection con = this.connection;
 			stmt = con.createStatement();
 
 			for (String sql : statements) {
@@ -76,9 +76,9 @@ public class SQLConnectionHandler {
 			logger.error("SQL connection not established");
 			logger.error(e.getMessage());
 		} finally {
-			if (connection != null)
+			if (this.connection != null)
 				try {
-					connection.close();
+					this.connection.close();
 					logger.debug("SQL connection closed");
 				} catch (Exception e) {
 				}
@@ -89,16 +89,16 @@ public class SQLConnectionHandler {
 
 	// Führt einzelnes SQL statement aus
 	public boolean ExecuteSQLstatement(String statement) {
-		connection = null;
+		this.connection = null;
 		boolean result = false;
 
 		try {
 			Class.forName(driver);
-			connection = DriverManager.getConnection("jdbc:sqlserver://" + host + ";databasename=" + db, user, pass);
+			this.connection = DriverManager.getConnection("jdbc:sqlserver://" + host + ";databasename=" + db, user, pass);
 			logger.debug("SQL connection established");
 
 			Statement stmt = null;
-			Connection con = connection;
+			Connection con = this.connection;
 			stmt = con.createStatement();
 
 			stmt.executeUpdate(statement);
@@ -109,9 +109,9 @@ public class SQLConnectionHandler {
 			logger.error("SQL connection not established");
 			logger.error(e.getMessage());
 		} finally {
-			if (connection != null)
+			if (this.connection != null)
 				try {
-					connection.close();
+					this.connection.close();
 					logger.debug("SQL connection closed");
 				} catch (Exception e) {
 				}

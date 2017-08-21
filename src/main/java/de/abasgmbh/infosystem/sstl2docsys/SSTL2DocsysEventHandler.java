@@ -28,12 +28,7 @@ import de.abas.erp.axi2.type.ScreenEventType;
 import de.abas.erp.common.type.enums.EnumDialogBox;
 import de.abas.erp.db.DbContext;
 import de.abas.erp.db.infosystem.custom.owis.SSTL2Docsys;
-import de.abas.erp.db.schema.purchasing.PurchaseOrder;
 import de.abas.erp.db.schema.purchasing.Purchasing;
-import de.abas.erp.db.schema.purchasing.Request;
-import de.abas.erp.db.schema.vendor.SelectableVendor;
-import de.abas.erp.db.schema.vendor.Vendor;
-import de.abas.erp.db.schema.vendor.VendorContact;
 import de.abas.erp.jfop.rt.api.annotation.RunFopWith;
 
 @EventHandler(head = SSTL2Docsys.class, row = SSTL2Docsys.Row.class)
@@ -114,25 +109,14 @@ public class SSTL2DocsysEventHandler {
 				mbh.writePartListToSQL(list);
 			}
 
-			Request rq = null;
-			PurchaseOrder po = null;
 			String ptyp = head.getYvorgang().getString(Purchasing.META.type);
 			if (ptyp.equals("(2)")) {
-				rq = ctx.load(Request.class, head.getYvorgang().id());
+				RequestProcess rp = new RequestProcess();
+				rp.WriteIndexValue(head.getYvorgang(), ctx, sqlcon);
 			} else if (ptyp.equals("(3)")) {
-				po = ctx.load(PurchaseOrder.class, head.getYvorgang().id());
+				PurchaseOrderProcess po = new PurchaseOrderProcess();
+				po.WriteIndexValue(head.getYvorgang(), ctx, sqlcon);
 			}
-
-			PartListUserIndexValues pluiv = new PartListUserIndexValues();
-			pluiv.setAbasId(head.getYvorgang().getId().toString());
-			pluiv.setBelegNr(head.getYvorgang().getIdno());
-			pluiv.setDocumentType((ptyp.equals("(2)")) ? "Anfrage" : "Bestellung");
-			pluiv.setDocumentDate((ptyp.equals("(2)")) ? rq.getDateFrom().toString() : po.getDateFrom().toString());
-			pluiv.setCuSuNo((ptyp.equals("(2)")) ? rq.getVendor().getIdno() : po.getVendor().getIdno());
-			SelectableVendor sv = (ptyp.equals("(2)")) ? rq.getVendor() : po.getVendor();
-			pluiv.setCuSuName((sv instanceof Vendor) ? ((Vendor) sv).getAddr() : ((VendorContact) sv).getAddr());
-
-			sqlcon.ExecuteSQLstatement(pluiv.CreateSQLStatement());
 		} else {
 			logger.error("No part selected.");
 			screenControl.setNote("Bitte wählen Sie einen Artikel oder eine Anfrage/Bestellung aus!");

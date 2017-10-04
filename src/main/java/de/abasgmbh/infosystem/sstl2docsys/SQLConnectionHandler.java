@@ -18,9 +18,14 @@ public class SQLConnectionHandler {
 	private String db;
 	private String user;
 	private String pass;
+	private boolean connected = false;
 
-	public Connection getConnection() {
-		return connection;
+//	public Connection getConnection() {
+//		return connection;
+//	}
+
+	public boolean isConnected() {
+		return connected;
 	}
 
 	// Konstruktor inkl. Verbindungstest
@@ -34,12 +39,14 @@ public class SQLConnectionHandler {
 			this.connection = DriverManager.getConnection("jdbc:sqlserver://" + phost + ";databasename=" + pdb, puser,
 					ppass);
 			logger.debug("SQL connection established");
+			this.connected = true;
 			this.driver = pdriver;
 			this.host = phost;
 			this.db = pdb;
 			this.user = puser;
 			this.pass = ppass;
 		} catch (SQLException e) {
+			this.connected = false;
 			logger.error("SQL connection could not be established");
 			logger.error(e.getMessage());
 		} finally {
@@ -54,12 +61,19 @@ public class SQLConnectionHandler {
 
 	// Führt SQL statements nacheinander aus
 	public boolean ExecuteSQLstatements(ArrayList<String> statements) {
+
+		if (!this.isConnected()) {
+			logger.error("ExecuteSQLstatements: not connected");
+			return false;
+		}
+
 		this.connection = null;
 		boolean result = false;
 
 		try {
 			Class.forName(driver);
-			this.connection = DriverManager.getConnection("jdbc:sqlserver://" + host + ";databasename=" + db, user, pass);
+			this.connection = DriverManager.getConnection("jdbc:sqlserver://" + host + ";databasename=" + db, user,
+					pass);
 			logger.debug("SQL connection established");
 
 			Statement stmt = null;
@@ -89,12 +103,19 @@ public class SQLConnectionHandler {
 
 	// Führt einzelnes SQL statement aus
 	public boolean ExecuteSQLstatement(String statement) {
+
+		if (!this.isConnected()) {
+			logger.error("ExecuteSQLstatements: not connected");
+			return false;
+		}
+
 		this.connection = null;
 		boolean result = false;
 
 		try {
 			Class.forName(driver);
-			this.connection = DriverManager.getConnection("jdbc:sqlserver://" + host + ";databasename=" + db, user, pass);
+			this.connection = DriverManager.getConnection("jdbc:sqlserver://" + host + ";databasename=" + db, user,
+					pass);
 			logger.debug("SQL connection established");
 
 			Statement stmt = null;
@@ -119,4 +140,5 @@ public class SQLConnectionHandler {
 
 		return result;
 	}
+
 }

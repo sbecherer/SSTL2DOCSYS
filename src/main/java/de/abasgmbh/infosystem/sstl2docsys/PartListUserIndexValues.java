@@ -4,7 +4,6 @@ public class PartListUserIndexValues {
 	private String abasId;
 	private String belegNr;
 	private String documentType;
-	private String documentDate;
 	private String cuSuNo;
 	private String cuSuName;
 
@@ -32,14 +31,6 @@ public class PartListUserIndexValues {
 		this.documentType = documentType;
 	}
 
-	public String getDocumentDate() {
-		return documentDate;
-	}
-
-	public void setDocumentDate(String documentDate) {
-		this.documentDate = documentDate;
-	}
-
 	public String getCuSuNo() {
 		return cuSuNo;
 	}
@@ -58,8 +49,8 @@ public class PartListUserIndexValues {
 
 	public String CreateSQLStatement() {
 		String statement = "INSERT INTO [dbo].[TBL_SUPPLIERWEB_PARTLIST_USER_INDEXVALUES] ([AbasID], [BelegNr], [DocumentType], [DocumentDate], [CuSuNo], [CuSuName]) "
-				+ "VALUES ('" + this.getAbasId() + "', '" + this.getBelegNr() + "', '" + this.getDocumentType() + "', '"
-				+ this.getDocumentDate() + "', '" + this.getCuSuNo() + "', '" + this.getCuSuName() + "')";
+				+ "VALUES ('" + this.getAbasId() + "', '" + this.getBelegNr() + "', '" + this.getDocumentType()
+				+ "', FORMAT(getdate(), 'yyyyMMdd'),'" + this.getCuSuNo() + "', '" + this.getCuSuName() + "')";
 
 		return statement;
 	}

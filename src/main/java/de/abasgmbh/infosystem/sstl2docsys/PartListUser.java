@@ -3,6 +3,7 @@ package de.abasgmbh.infosystem.sstl2docsys;
 public class PartListUser {
 	private String abasId;
 	private String userLogin;
+	private String belegNr;
 	private String artikelNr;
 	private String unterArtikelNr;
 
@@ -22,6 +23,14 @@ public class PartListUser {
 		this.userLogin = userLogin;
 	}
 
+	public String getBelegNr() {
+		return belegNr;
+	}
+
+	public void setBelegNr(String belegNr) {
+		this.belegNr = belegNr;
+	}
+
 	public String getArtikelNr() {
 		return artikelNr;
 	}
@@ -39,9 +48,9 @@ public class PartListUser {
 	}
 
 	public String CreateSQLStatement() {
-		String statement = "INSERT INTO [dbo].[TBL_SUPPLIERWEB_PARTLIST_USER] ([AbasID], [UserLogin], [ArtikelNr], [UnterArtikelNr]) "
-				+ "VALUES ('" + this.getAbasId() + "', '" + this.getUserLogin() + "', '" + this.getArtikelNr() + "', '"
-				+ this.getUnterArtikelNr() + "')";
+		String statement = "INSERT INTO [dbo].[TBL_SUPPLIERWEB_PARTLIST_USER] ([AbasID], [UserLogin], [BelegNr], [ArtikelNr], [UnterArtikelNr]) "
+				+ "VALUES ('" + this.getAbasId() + "', '" + this.getUserLogin() + "', '" + this.getBelegNr() + "', '"
+				+ this.getArtikelNr() + "', '" + this.getUnterArtikelNr() + "')";
 
 		return statement;
 	}

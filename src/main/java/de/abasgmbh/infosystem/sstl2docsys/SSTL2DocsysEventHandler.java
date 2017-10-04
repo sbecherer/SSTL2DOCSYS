@@ -25,11 +25,15 @@ import de.abas.erp.axi2.event.ScreenEvent;
 import de.abas.erp.axi2.type.ButtonEventType;
 import de.abas.erp.axi2.type.FieldEventType;
 import de.abas.erp.axi2.type.ScreenEventType;
+import de.abas.erp.common.type.IdImpl;
 import de.abas.erp.common.type.enums.EnumDialogBox;
 import de.abas.erp.db.DbContext;
 import de.abas.erp.db.infosystem.custom.owis.SSTL2Docsys;
 import de.abas.erp.db.schema.purchasing.Purchasing;
+import de.abas.erp.db.schema.vendor.Vendor;
 import de.abas.erp.jfop.rt.api.annotation.RunFopWith;
+import de.abas.jfop.base.buffer.BufferFactory;
+import de.abas.jfop.base.buffer.GlobalTextBuffer;
 
 @EventHandler(head = SSTL2Docsys.class, row = SSTL2Docsys.Row.class)
 
@@ -59,16 +63,18 @@ public class SSTL2DocsysEventHandler {
 		}
 
 		// SQL Verbindung testen
-		SQLConnectionHandler sqlcon = null;
+		SQLConnectionHandler sqlConnectionHandler = null;
 		try {
-			sqlcon = new SQLConnectionHandler(head.getYsqldriver(), head.getYsqlhost(), head.getYsqldb(),
-					head.getYsqluser(), head.getYsqlpass());
+			if (USESQL) {
+				sqlConnectionHandler = new SQLConnectionHandler(head.getYsqldriver(), head.getYsqlhost(),
+						head.getYsqldb(), head.getYsqluser(), head.getYsqlpass());
+			}
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 
 		// Statusabfrage des Verbindungstest
-		if (sqlcon.getConnection() == null) {
+		if (USESQL && !sqlConnectionHandler.isConnected()) {
 			screenControl.setNote("Verbindung zum SQL Server konnte nicht hergestellt werden!");
 			if (head.getYshowbox()) {
 				new TextBox(ctx, "Fehler!", "Verbindung zum SQL Server konnte nicht hergestellt werden!").show();
@@ -90,32 +96,70 @@ public class SSTL2DocsysEventHandler {
 
 		if (head.getYartikel() != null) {
 			// Ein Artikel ist gesetzt
-			MultiLevelBomHelper mbh = new MultiLevelBomHelper(ctx, sqlcon, USESQL);
 
-			ArrayList<PartListUser> list = mbh.getBOMList(head.getYartikel());
+			// G-Puffer laden
+			BufferFactory bufferFactory = BufferFactory.newInstance(true);
+			GlobalTextBuffer globalTextBuffer = bufferFactory.getGlobalTextBuffer();
+
+			// Passwortdatensatz aus G-Puffer laden
+			String dmsuser = globalTextBuffer.getStringValue("currUserPwd^altDMSName");
+			// Abas ID erzeugen
+			String abasid = head.getYartikel().getId().toString() + "_" + dmsuser + "_" + System.currentTimeMillis();
+			
+			MultiLevelBomHelper mbh = new MultiLevelBomHelper(ctx, sqlConnectionHandler, USESQL, "");
+
+			ArrayList<PartListUser> list = mbh.getBOMList(head.getYartikel(), dmsuser, abasid);
 
 			logger.debug("Part: " + head.getYartikel().getIdno() + ", found " + list.size() + " sub parts");
 			if (list.size() > 0) {
 				mbh.writePartListUserToSQL(list);
 			}
+
+			PartListUserIndexValues pluiv = new PartListUserIndexValues();
+			pluiv.setAbasId(abasid);
+			pluiv.setBelegNr(head.getYartikel().getIdno());
+			pluiv.setDocumentType("Anfrage");
+			if (head.getYeinzellief() != null) {
+				pluiv.setCuSuNo(head.getYeinzellief().getIdno());
+				Vendor sv = head.getYeinzellief();
+				pluiv.setCuSuName(sv.getAddr());
+			}
+			if (USESQL) {
+				sqlConnectionHandler.ExecuteSQLstatement(pluiv.CreateSQLStatement());
+			}
 		} else if (head.getYvorgang() != null) {
 			// Ein Vorgang ist gesetzt
-			MultiLevelBomHelper mbh = new MultiLevelBomHelper(ctx, sqlcon, USESQL);
 
-			ArrayList<PartList> list = mbh.getProcessBOMList(head.getYvorgang());
+			if (head.getYprint()) // Wenn "Print"
+			{
+				MultiLevelBomHelper mbh = new MultiLevelBomHelper(ctx, sqlConnectionHandler, USESQL,
+						head.getYtransferfile());
 
-			logger.debug("Process: " + head.getYvorgang().getIdno() + ", found " + list.size() + " entries");
-			if (list.size() > 0) {
-				mbh.writePartListToSQL(list);
-			}
+				ArrayList<PartList> list = mbh.getProcessBOMList(head.getYvorgang());
 
-			String ptyp = head.getYvorgang().getString(Purchasing.META.type);
-			if (ptyp.equals("(2)")) {
-				RequestProcess rp = new RequestProcess();
-				rp.WriteIndexValue(head.getYvorgang(), ctx, sqlcon);
-			} else if (ptyp.equals("(3)")) {
-				PurchaseOrderProcess po = new PurchaseOrderProcess();
-				po.WriteIndexValue(head.getYvorgang(), ctx, sqlcon);
+				logger.debug("Process: " + head.getYvorgang().getIdno() + ", found " + list.size() + " entries");
+				if (list.size() > 0) {
+					mbh.writePartListToSQL(list);
+				}
+			} else { // Wenn nicht "Print"
+				MultiLevelBomHelper mbh = new MultiLevelBomHelper(ctx, sqlConnectionHandler, USESQL,
+						head.getYtransferfile());
+
+				ArrayList<PartListUser> list = mbh.getProcessBOMListUser(head.getYvorgang());
+
+				logger.debug("Process: " + head.getYvorgang().getIdno() + ", found " + list.size() + " entries");
+				if (list.size() > 0) {
+					mbh.writePartListUserToSQL(list);
+				}
+
+				String ptyp = head.getYvorgang().getString(Purchasing.META.type);
+				if (ptyp.equals("(2)")) {
+					RequestProcess rp = new RequestProcess();
+					rp.WriteIndexValue(head.getYvorgang(), ctx, sqlConnectionHandler, USESQL);
+				} else if (ptyp.equals("(3)")) {
+					PurchaseOrderProcess po = new PurchaseOrderProcess();
+					po.WriteIndexValue(head.getYvorgang(), ctx, sqlConnectionHandler, USESQL);
+				}
 			}
 		} else {
 			logger.error("No part selected.");
@@ -148,16 +192,16 @@ public class SSTL2DocsysEventHandler {
 		}
 
 		// Objekt erzeugen und damit den Verbindungstest ausführen
-		SQLConnectionHandler sch = null;
+		SQLConnectionHandler sqlConnectionHandler = null;
 		try {
-			sch = new SQLConnectionHandler(head.getYsqldriver(), head.getYsqlhost(), head.getYsqldb(),
+			sqlConnectionHandler = new SQLConnectionHandler(head.getYsqldriver(), head.getYsqlhost(), head.getYsqldb(),
 					head.getYsqluser(), head.getYsqlpass());
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 
 		// Abfrage des Status des Verbindungstest
-		if (sch.getConnection() == null) {
+		if (!sqlConnectionHandler.isConnected()) {
 			screenControl.setNote("Verbindung zum SQL Server konnte nicht hergestellt werden!");
 			if (head.getYshowbox()) {
 				new TextBox(ctx, "Fehler!", "Verbindung zum SQL Server konnte nicht hergestellt werden!").show();
@@ -202,6 +246,8 @@ public class SSTL2DocsysEventHandler {
 		configProperties.setProperty("sqldb", head.getYsqldb());
 		configProperties.setProperty("sqluser", head.getYsqluser());
 		configProperties.setProperty("sqlpassword", head.getYsqlpass());
+		configProperties.setProperty("productvendor",
+				(head.getYeinzellief() != null) ? head.getYeinzellief().getId().toString() : "");
 
 		FileOutputStream out;
 		try {
@@ -242,7 +288,15 @@ public class SSTL2DocsysEventHandler {
 				head.setYsqldb(configProperties.getProperty("sqldb"));
 				head.setYsqluser(configProperties.getProperty("sqluser"));
 				head.setYsqlpass(configProperties.getProperty("sqlpassword"));
+				if (configProperties.getProperty("productvendor") != null
+						&& !configProperties.getProperty("productvendor").trim().isEmpty()) {
+					Vendor vendor = ctx.load(Vendor.class, new IdImpl(configProperties.getProperty("productvendor")));
+					if (vendor != null) {
+						head.setYeinzellief(vendor);
+					}
+				}
 			} catch (IOException e) {
+				logger.error(e.getMessage());
 			}
 
 		} else {

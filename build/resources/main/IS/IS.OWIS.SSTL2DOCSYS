@@ -71,12 +71,15 @@ Z#1#isysqltestconn#BU3#n#SQL Verbindung testen#A#A#(1)##java:de.abasgmbh.infosys
 Z#1#isysqlpass#BGLP50#n#SQL Passwort#A#A#(2)######y#1#y#0##y##
 Z#1#isysqluser#GL50#n#SQL Benutzer#A#A#(2)######y#1#y#0##y##
 Z#1#isysqlhost#GL50#n#SQL Host#A#A#(2)######y#1#y#0##y##
-Z#1#isyvorgang#P4:21.22#n#Anfrage/Bestellung#A#A#(2)#####java:de.abasgmbh.infosystem.sstl2docsys.SSTL2DocsysEventHandler@SSTL2DOCSYS#y#1#y#0##y##
+Z#1#isyvorgang#P4:21.22#n#Anfrage/Bestellung#A#A#(2)#####owis/IS.SSTL2DOCSYS#y#1#y#0##y##
 Z#1#isyartikel#P2:1#n#einzelner Artikel#A#A#(2)#####java:de.abasgmbh.infosystem.sstl2docsys.SSTL2DocsysEventHandler@SSTL2DOCSYS#y#1#y#0##y##
 Z#1#isysqldb#GL50#n#SQL Datenbank#A#A#(2)######y#1#y#0##y##
 Z#1#isyshowbox#B#n#Boxen anzeigen#A#A#(2)######y#1#y#0##y##
 Z#1#isysaveconfig#BU3#n#Verbindungsdaten speichern#A#A#(1)##java:de.abasgmbh.infosystem.sstl2docsys.SSTL2DocsysEventHandler@SSTL2DOCSYS####y#1#y#0##y##
 Z#1#isysqldriver#GL50#n#SQL Treiber#A#A#(2)######y#1#y#0##y##
+Z#1#isytransferfile#GL200#n#Transfer-Datei#A#A#(2)######y#1#y#0##y##
+Z#1#isyeinzellief#P1:1#n#Lieferant f?r Artikel Abruf#A#A#(2)######y#1#y#0##y##
+Z#1#isyprint#B#n#aus Druck aufgerufen?#A#A#(2)######y#1#y#0##y##
 Z#0#ittabnr##y####(0)######n#0#n#0##n##
 Z#0#itzid##y####(0)######n#0#n#0##n##
 Z#0#itzn##y####(0)######n#0#n#0##n##

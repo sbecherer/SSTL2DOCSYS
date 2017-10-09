@@ -118,7 +118,7 @@ public class SSTL2DocsysEventHandler {
 			PartListUserIndexValues pluiv = new PartListUserIndexValues();
 			pluiv.setAbasId(abasid);
 			pluiv.setBelegNr(head.getYartikel().getIdno());
-			pluiv.setDocumentType("Anfrage");
+			pluiv.setDocumentType("999");
 			if (head.getYeinzellief() != null) {
 				pluiv.setCuSuNo(head.getYeinzellief().getIdno());
 				Vendor sv = head.getYeinzellief();
